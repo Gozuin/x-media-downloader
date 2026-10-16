@@ -1,0 +1,6 @@
+# 运行时依赖（三个，都很常见）
+requests>=2.31.0
+websocket-client>=1.6.0
+
+# 只有下载加密 HLS 分片时才用到；装上更稳
+cryptography>=41.0.0

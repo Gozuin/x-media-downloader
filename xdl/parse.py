@@ -185,6 +185,10 @@ def photo_candidate_urls(media_url_https: str) -> List[str]:
         add(f"{stem}.jpg?name={name}")
     for name in PHOTO_SIZE_FALLBACKS:
         add(f"{stem}?name={name}")
+    # 原始地址（浏览器已经成功加载过它，一定能取到）必须是最后一个兜底；
+    # 它可能已被上面的循环生成过，所以先摘掉再追加，确保排在链尾。
+    if raw in out:
+        out.remove(raw)
     add(raw)
     return out
 

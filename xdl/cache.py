@@ -133,8 +133,12 @@ def load(out_dir: str, query: str, tab: str, ttl_hours: float = DEFAULT_TTL_HOUR
     except (OSError, ValueError):
         logger("抓取缓存损坏，已忽略并重新抓取")
         return None
+    if ttl_hours <= 0:
+        # TTL <= 0 表示“不要复用缓存”，直接当过期处理（否则会永远复用旧结果）
+        logger("缓存复用已关闭（TTL<=0），本轮重新抓取")
+        return None
     saved_at = _parse_iso(payload.get("at"))
-    if saved_at is not None and ttl_hours > 0:
+    if saved_at is not None:
         age_hours = (dt.datetime.now() - saved_at).total_seconds() / 3600.0
         if age_hours > ttl_hours:
             logger(f"抓取缓存已过期（{age_hours:.1f} 小时前，上限 {ttl_hours:g} 小时），重新抓取")
